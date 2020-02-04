@@ -516,16 +516,12 @@ int     main(int argc, char **argv)
     MAIL_VERSION_CHECK;
 
     /*
-     * The mail system must be run by the superuser so it can revoke
-     * privileges for selected operations. That's right - it takes privileges
-     * to toss privileges.
+     * We are going to run postfix as non-root, so will have no privileges to give up
+     * we are also sufficiently well-trained that we'll not open a pipe to something in
+     * /usr/sbin and talk SMTP at it.
+     *
+     * Hence, here I have removed the getuid check
      */
-    if (getuid() != 0) {
-	msg_error("to submit mail, use the Postfix sendmail command");
-	msg_fatal("the postfix command is reserved for the superuser");
-    }
-    if (unsafe() != 0)
-	msg_fatal("the postfix command must not run as a set-uid process");
 
     /*
      * Parse switches.
